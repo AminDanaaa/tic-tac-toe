@@ -21,7 +21,6 @@ const board = (() => {
 
     // Always returns "X" or "O" (True values) or "" (Falsy value)
     const searchForWinner = () => {
-        printBoardConsole();
         for (let pattern of WIN_PATTERNS) {
             const [a, b, c] = pattern;
             if (boardArray[a] && boardArray[a] === boardArray[b] && boardArray[a] === boardArray[c]) {
@@ -69,6 +68,17 @@ const gameControl = (() => {
             resetGame();
             return "The game is a tie.";
         }
+        return "";
+    };
+
+    const startGame = () => {
+        let isRunning = true;
+        let roundResult = "";
+
+        while (isRunning) {
+            roundResult = playRound()
+            isRunning = !roundResult;
+        }
     };
 
     const resetGame = () => {
@@ -76,29 +86,14 @@ const gameControl = (() => {
         moves = 0;
     };
 
-    return { playRound, resetGame };
+    return { startGame, resetGame };
 })();
 
 
 
+
+
+// Main():
 const player1 = createPlayer("Amin", "X");
 const player2 = createPlayer("Someone", "O");
-
-board.placeMarker(2, player1.getMarker());
-console.log(gameControl.playRound());
-board.placeMarker(1, player2.getMarker());
-console.log(gameControl.playRound());
-board.placeMarker(7, player1.getMarker());
-console.log(gameControl.playRound());
-board.placeMarker(4, player2.getMarker());
-console.log(gameControl.playRound());
-board.placeMarker(6, player1.getMarker());
-console.log(gameControl.playRound());
-board.placeMarker(3, player2.getMarker());
-console.log(gameControl.playRound());
-board.placeMarker(0, player1.getMarker());
-console.log(gameControl.playRound());
-board.placeMarker(8, player2.getMarker());
-console.log(gameControl.playRound());
-board.placeMarker(5, player1.getMarker());
-console.log(gameControl.playRound());
+gameControl.startGame();
