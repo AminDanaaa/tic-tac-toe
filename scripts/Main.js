@@ -19,6 +19,7 @@ modalOverlay.classList.add("modal-overlay");
 mainContainer.appendChild(mainHeader);
 mainContainer.appendChild(turnIndicator);
 mainContainer.appendChild(displayBoard);
+mainContainer.appendChild(modalOverlay);
 
 
 
@@ -28,15 +29,9 @@ mainContainer.appendChild(displayBoard);
 // Game Logic:
 let turnMarker = "X";
 
-function createPlayer(playerName, playerMarker) {
-    let name = playerName;
-    let marker = playerMarker;
-
-    const getName = () => name;
-    const getMarker = () => marker;
-
-    return { getName, getMarker };
-}
+const renderer = (() => {
+    return;
+})();
 
 
 
@@ -60,12 +55,6 @@ const board = (() => {
         return "";
     };
 
-    const printBoardConsole = () => {
-        console.log(`"${boardArray[0]}"   "${boardArray[1]}"   "${boardArray[2]}"`);
-        console.log(`"${boardArray[3]}"   "${boardArray[4]}"   "${boardArray[5]}"`);
-        console.log(`"${boardArray[6]}"   "${boardArray[7]}"   "${boardArray[8]}"`);
-    }
-
     const placeMarker = (index, marker) => {
         if (boardArray[index] === "") {
             boardArray[index] = marker;
@@ -73,7 +62,7 @@ const board = (() => {
         } else {
             return false;
         }
-    }
+    };
 
     // Board Game Buttons functionality:
     const initialize = () => {
@@ -90,19 +79,29 @@ const board = (() => {
                 }
             });
         }
-    }
+    };
 
     const resetBoard = () => {
         boardArray = Array(9).fill("");
     };
 
-    return { initialize, searchForWinner, resetBoard, placeMarker, printBoardConsole };
+    return { initialize, searchForWinner, resetBoard, placeMarker };
 })();
 
 
 
 const gameControl = (() => {
     let moves = 0;
+
+    const createPlayer = (playerName, playerMarker) => {
+        let name = playerName;
+        let marker = playerMarker;
+
+        const getName = () => name;
+        const getMarker = () => marker;
+
+        return { getName, getMarker };
+    };
 
     const playRound = () => {
         moves++;
@@ -122,12 +121,11 @@ const gameControl = (() => {
     const switchTurn = () => {
         turnMarker = turnMarker === "X" ? "O" : "X";
         turnIndicator.textContent = `It's player ${turnMarker} turn.`;
-    }
+    };
 
     const startGame = () => {
-        turnMarker = "X";
-        turnIndicator.textContent = `It's player ${turnMarker} turn.`;
         board.initialize();
+        resetGame();        
     };
 
     const resetGame = () => {
@@ -142,7 +140,7 @@ const gameControl = (() => {
         }
     };
 
-    return { startGame, resetGame, switchTurn, playRound };
+    return { createPlayer, startGame, resetGame, switchTurn, playRound };
 })();
 
 
@@ -151,6 +149,6 @@ const gameControl = (() => {
 
 
 // Main():
-const player1 = createPlayer("Amin", "X");
-const player2 = createPlayer("Someone", "O");
+const player1 = gameControl.createPlayer("Amin", "X");
+const player2 = gameControl.createPlayer("Someone", "O");
 gameControl.startGame();
