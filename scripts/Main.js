@@ -1,3 +1,33 @@
+// DOM handling:
+// Some constants and DOM elements:
+const mainContainer = document.querySelector(".main-container");
+const boardButtons = Array(9).fill(null);
+
+
+
+// Creating the elements
+const mainHeader = document.createElement("h1");
+mainHeader.textContent = "Tic Tac Toe";
+mainHeader.classList.add("main-header", "no-select");
+const turnIndicator = document.createElement("h2");
+turnIndicator.classList.add("turn-indicator", "no-select");
+const displayBoard = document.createElement("div");
+displayBoard.classList.add("display-board");
+const modalOverlay = document.createElement("div");
+modalOverlay.classList.add("modal-overlay");
+// Appending elements to eachother
+mainContainer.appendChild(mainHeader);
+mainContainer.appendChild(turnIndicator);
+mainContainer.appendChild(displayBoard);
+
+
+
+
+
+
+// Game Logic:
+let turnMarker = "X";
+
 function createPlayer(playerName, playerMarker) {
     let name = playerName;
     let marker = playerMarker;
@@ -45,11 +75,28 @@ const board = (() => {
         }
     }
 
+    // Board Game Buttons functionality:
+    const initialize = () => {
+        for (let i = 0; i < 9; i++) {
+            boardButtons[i] = document.createElement("button");
+            boardButtons[i].classList.add("board-buttons", "no-select");
+            displayBoard.appendChild(boardButtons[i]);
+            boardButtons[i].addEventListener(('click'), (e) => {
+                e.preventDefault();
+                if (boardButtons[i].textContent === "") {
+                    boardButtons[i].textContent = turnMarker;
+                    boardArray[i] = turnMarker;
+                    gameControl.playRound();
+                }
+            });
+        }
+    }
+
     const resetBoard = () => {
         boardArray = Array(9).fill("");
     };
 
-    return { searchForWinner, resetBoard, placeMarker };
+    return { initialize, searchForWinner, resetBoard, placeMarker, printBoardConsole };
 })();
 
 
@@ -59,6 +106,7 @@ const gameControl = (() => {
 
     const playRound = () => {
         moves++;
+        gameControl.switchTurn();
         let searchResult = board.searchForWinner();
         if (searchResult) {
             resetGame();
@@ -71,23 +119,32 @@ const gameControl = (() => {
         return "";
     };
 
-    const startGame = () => {
-        let isRunning = true;
-        let roundResult = "";
+    const switchTurn = () => {
+        turnMarker = turnMarker === "X" ? "O" : "X";
+        turnIndicator.textContent = `It's player ${turnMarker} turn.`;
+    }
 
-        while (isRunning) {
-            roundResult = playRound()
-            isRunning = !roundResult;
-        }
+    const startGame = () => {
+        turnMarker = "X";
+        turnIndicator.textContent = `It's player ${turnMarker} turn.`;
+        board.initialize();
     };
 
     const resetGame = () => {
+        console.log("New Game.");
         board.resetBoard();
         moves = 0;
+        turnMarker = "X";
+        turnIndicator.textContent = `It's player ${turnMarker} turn.`;
+        let boardButtons = document.querySelectorAll(".board-buttons");
+        for (button of boardButtons) {
+            button.textContent = "";
+        }
     };
 
-    return { startGame, resetGame };
+    return { startGame, resetGame, switchTurn, playRound };
 })();
+
 
 
 
