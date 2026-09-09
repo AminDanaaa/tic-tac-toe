@@ -4,29 +4,40 @@ let turnMarker = "X";
 const renderer = (() => {
     // Creating the DOM elements using renderer
     const mainContainer = document.querySelector(".main-container");
+    const mainTextContainer = document.createElement("div");
     const mainHeader = document.createElement("h1");
     const turnIndicator = document.createElement("h2");
     const displayBoard = document.createElement("div");
     const modalOverlay = document.createElement("div");
+    const modalBoxResult = document.createElement("div");
+    const modalResultText = document.createElement("h2");
+    const modalResultButton = document.createElement("button");
 
     // Renderer constants
     const boardButtons = Array(9).fill(null);
 
     const render = () => {
         // assign css classes to DOM elements
+        mainTextContainer.classList.add("main-text-container");
         mainHeader.classList.add("main-header", "no-select");
         turnIndicator.classList.add("turn-indicator", "no-select");
         displayBoard.classList.add("display-board");
         modalOverlay.classList.add("modal-overlay");
+        modalBoxResult.classList.add("modal-box");
+        modalResultText.classList.add("no-select");
+        modalResultButton.classList.add("no-select");
         
         // Appending elements to their parent element
-        mainContainer.appendChild(mainHeader);
-        mainContainer.appendChild(turnIndicator);
+        mainContainer.appendChild(mainTextContainer);
         mainContainer.appendChild(displayBoard);
         mainContainer.appendChild(modalOverlay);
+        mainTextContainer.appendChild(mainHeader);
+        mainTextContainer.appendChild(turnIndicator);
+        modalOverlay.appendChild(modalBoxResult);
         
         // Initialize text contents
         mainHeader.textContent = "Tic Tac Toe";
+        modalResultButton.textContent = `Play Again`;
 
         // Others:
         makeButtons();
@@ -41,6 +52,21 @@ const renderer = (() => {
         }
     };
 
+    const renderResultModal = (winnerMarker) => {
+        modalOverlay.classList.add("modal-overlay-active");
+        modalBoxResult.appendChild(modalResultText);
+        modalBoxResult.appendChild(modalResultButton);
+        if (winnerMarker === "") {
+            modalResultText.textContent = `The game is a tie!`;
+        } else {
+            modalResultText.textContent = `Player ${winnerMarker} has won!`;
+        }
+        modalResultButton.addEventListener(('click'), (e) => {
+            e.preventDefault();
+            modalOverlay.classList.remove("modal-overlay-active");
+        });
+    };
+
     const clearButtons = () => {
         for (button of boardButtons) {
             button.textContent = "";
@@ -51,7 +77,7 @@ const renderer = (() => {
 
     const getBoardButtons = () => boardButtons;
 
-    return { render, getTurnIndicator, getBoardButtons, clearButtons };
+    return { render, getTurnIndicator, getBoardButtons, clearButtons, renderResultModal };
 })();
 
 
@@ -92,6 +118,7 @@ const board = (() => {
             boardButtons[i].addEventListener(('click'), (e) => {
                 e.preventDefault();
                 if (boardButtons[i].textContent === "") {
+                    boardButtons[i].disabled = true;
                     boardButtons[i].textContent = turnMarker;
                     boardArray[i] = turnMarker;
                     gameControl.playRound();
@@ -102,6 +129,10 @@ const board = (() => {
 
     const resetBoard = () => {
         boardArray = Array(9).fill("");
+        let boardButtons = renderer.getBoardButtons();
+        for (let i = 0; i < 9; i++) {
+            boardButtons[i].disabled = false;
+        }
     };
 
     return { initialize, searchForWinner, resetBoard, placeMarker };
@@ -128,10 +159,12 @@ const gameControl = (() => {
         let searchResult = board.searchForWinner();
         if (searchResult) {
             resetGame();
+            renderer.renderResultModal(searchResult);
             return `The ${searchResult} has won!`;
         }
         if (moves === 9 && !searchResult) {
             resetGame();
+            renderer.renderResultModal(searchResult);
             return "The game is a tie.";
         }
         return "";
@@ -154,7 +187,6 @@ const gameControl = (() => {
         turnMarker = "X";
         renderer.getTurnIndicator().textContent = `It's player ${turnMarker} turn.`;
         renderer.clearButtons();
-        console.log("[Control]: New game has been successfully started.");
     };
 
     return { createPlayer, startGame, resetGame, switchTurn, playRound };
