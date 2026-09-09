@@ -1,43 +1,64 @@
-// DOM handling:
-// Some constants and DOM elements:
-const mainContainer = document.querySelector(".main-container");
-const boardButtons = Array(9).fill(null);
-
-
-
-// Creating the elements
-const mainHeader = document.createElement("h1");
-mainHeader.textContent = "Tic Tac Toe";
-mainHeader.classList.add("main-header", "no-select");
-const turnIndicator = document.createElement("h2");
-turnIndicator.classList.add("turn-indicator", "no-select");
-const displayBoard = document.createElement("div");
-displayBoard.classList.add("display-board");
-const modalOverlay = document.createElement("div");
-modalOverlay.classList.add("modal-overlay");
-// Appending elements to eachother
-mainContainer.appendChild(mainHeader);
-mainContainer.appendChild(turnIndicator);
-mainContainer.appendChild(displayBoard);
-mainContainer.appendChild(modalOverlay);
-
-
-
-
-
-
 // Game Logic:
 let turnMarker = "X";
 
 const renderer = (() => {
-    return;
+    // Creating the DOM elements using renderer
+    const mainContainer = document.querySelector(".main-container");
+    const mainHeader = document.createElement("h1");
+    const turnIndicator = document.createElement("h2");
+    const displayBoard = document.createElement("div");
+    const modalOverlay = document.createElement("div");
+
+    // Renderer constants
+    const boardButtons = Array(9).fill(null);
+
+    const render = () => {
+        // assign css classes to DOM elements
+        mainHeader.classList.add("main-header", "no-select");
+        turnIndicator.classList.add("turn-indicator", "no-select");
+        displayBoard.classList.add("display-board");
+        modalOverlay.classList.add("modal-overlay");
+        
+        // Appending elements to their parent element
+        mainContainer.appendChild(mainHeader);
+        mainContainer.appendChild(turnIndicator);
+        mainContainer.appendChild(displayBoard);
+        mainContainer.appendChild(modalOverlay);
+        
+        // Initialize text contents
+        mainHeader.textContent = "Tic Tac Toe";
+
+        // Others:
+        makeButtons();
+    }
+
+    // render board buttons
+    const makeButtons = () => {
+        for (let i = 0; i < 9; i++) {
+            boardButtons[i] = document.createElement("button");
+            boardButtons[i].classList.add("board-buttons", "no-select");
+            displayBoard.appendChild(boardButtons[i]);
+        }
+    };
+
+    const clearButtons = () => {
+        for (button of boardButtons) {
+            button.textContent = "";
+        }
+    };
+
+    const getTurnIndicator = () => turnIndicator;
+
+    const getBoardButtons = () => boardButtons;
+
+    return { render, getTurnIndicator, getBoardButtons, clearButtons };
 })();
 
 
 
 const board = (() => {
+    // Board constants
     let boardArray = Array(9).fill("");
-
     const WIN_PATTERNS = [
         [0, 1, 2], [3, 4, 5], [6, 7, 8],    // Rows
         [0, 3, 6], [1, 4, 7], [2, 5, 8],    // Columns
@@ -67,9 +88,7 @@ const board = (() => {
     // Board Game Buttons functionality:
     const initialize = () => {
         for (let i = 0; i < 9; i++) {
-            boardButtons[i] = document.createElement("button");
-            boardButtons[i].classList.add("board-buttons", "no-select");
-            displayBoard.appendChild(boardButtons[i]);
+            let boardButtons = renderer.getBoardButtons();
             boardButtons[i].addEventListener(('click'), (e) => {
                 e.preventDefault();
                 if (boardButtons[i].textContent === "") {
@@ -120,24 +139,22 @@ const gameControl = (() => {
 
     const switchTurn = () => {
         turnMarker = turnMarker === "X" ? "O" : "X";
-        turnIndicator.textContent = `It's player ${turnMarker} turn.`;
+        renderer.getTurnIndicator().textContent = `It's player ${turnMarker} turn.`;
     };
 
     const startGame = () => {
+        renderer.render();
         board.initialize();
         resetGame();        
     };
 
     const resetGame = () => {
-        console.log("New Game.");
         board.resetBoard();
         moves = 0;
         turnMarker = "X";
-        turnIndicator.textContent = `It's player ${turnMarker} turn.`;
-        let boardButtons = document.querySelectorAll(".board-buttons");
-        for (button of boardButtons) {
-            button.textContent = "";
-        }
+        renderer.getTurnIndicator().textContent = `It's player ${turnMarker} turn.`;
+        renderer.clearButtons();
+        console.log("[Control]: New game has been successfully started.");
     };
 
     return { createPlayer, startGame, resetGame, switchTurn, playRound };
