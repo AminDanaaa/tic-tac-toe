@@ -30,7 +30,7 @@ button:disabled {
     padding: 0;
     margin: 0;
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
     flex-direction: column;
 }
@@ -41,12 +41,12 @@ button:disabled {
     justify-content: space-around;
     align-items: center;
     background-color: var(--modal-box-background);
-    border: 3px dashed #6200EE;
-    margin: 50px;
-    max-width: 260px;
+    border: 8px double #6200EE;
+    margin: 90px;
+    max-width: 200px;
     width: 100%;
-    border-radius: 20px;
-    padding: 22px 28px 8px;
+    border-radius: 12px;
+    padding: 14px 20px 0px;
 }
 
 .main-header {
@@ -78,6 +78,25 @@ button:disabled {
     margin: 2px;
     aspect-ratio: 1 / 1;
     font-size: 2rem;
+}
+
+.new-game-btn {
+    border: 2px solid var(--dark-primary-variant);
+    border-radius: 8px;
+    background-color: var(--dark-primary);
+    margin: 40px;
+    width: 100%;
+    max-width: 100px;
+    height: 30px;
+}
+
+.new-game-btn:hover {
+    background-color: var(--dark-primary-variant);
+    color: var(--dark-primary);
+}
+
+.new-game-btn:active {
+    background-color: var(--dark-main-background);
 }
 
 .modal-overlay {

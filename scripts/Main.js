@@ -8,6 +8,7 @@ const renderer = (() => {
     const mainHeader = document.createElement("h1");
     const turnIndicator = document.createElement("h2");
     const displayBoard = document.createElement("div");
+    const newGameBtn = document.createElement("button");
     const modalOverlay = document.createElement("div");
     const modalBoxResult = document.createElement("div");
     const modalResultText = document.createElement("h2");
@@ -22,6 +23,7 @@ const renderer = (() => {
         mainHeader.classList.add("main-header", "no-select");
         turnIndicator.classList.add("turn-indicator", "no-select");
         displayBoard.classList.add("display-board");
+        newGameBtn.classList.add("new-game-btn");
         modalOverlay.classList.add("modal-overlay");
         modalBoxResult.classList.add("modal-box");
         modalResultText.classList.add("no-select");
@@ -30,6 +32,7 @@ const renderer = (() => {
         // Appending elements to their parent element
         mainContainer.appendChild(mainTextContainer);
         mainContainer.appendChild(displayBoard);
+        mainContainer.appendChild(newGameBtn);
         mainContainer.appendChild(modalOverlay);
         mainTextContainer.appendChild(mainHeader);
         mainTextContainer.appendChild(turnIndicator);
@@ -38,10 +41,15 @@ const renderer = (() => {
         // Initialize text contents
         mainHeader.textContent = "Tic Tac Toe";
         modalResultButton.textContent = `Play Again`;
+        newGameBtn.textContent = "New Game"
 
         // Others:
         makeButtons();
-    }
+        newGameBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            gameControl.resetGame();
+        });
+    };
 
     // render board buttons
     const makeButtons = () => {
