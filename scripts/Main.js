@@ -110,15 +110,6 @@ const board = (() => {
         return "";
     };
 
-    const placeMarker = (index, marker) => {
-        if (boardArray[index] === "") {
-            boardArray[index] = marker;
-            return true;
-        } else {
-            return false;
-        }
-    };
-
     // Board Game Buttons functionality:
     const initialize = () => {
         for (let i = 0; i < 9; i++) {
@@ -143,7 +134,7 @@ const board = (() => {
         }
     };
 
-    return { initialize, searchForWinner, resetBoard, placeMarker };
+    return { initialize, searchForWinner, resetBoard };
 })();
 
 
@@ -163,19 +154,13 @@ const gameControl = (() => {
 
     const playRound = () => {
         moves++;
-        gameControl.switchTurn();
         let searchResult = board.searchForWinner();
-        if (searchResult) {
+        switchTurn();
+        if (searchResult || (moves === 9 && !searchResult)) {
             resetGame();
             renderer.renderResultModal(searchResult);
-            return `The ${searchResult} has won!`;
+            return;
         }
-        if (moves === 9 && !searchResult) {
-            resetGame();
-            renderer.renderResultModal(searchResult);
-            return "The game is a tie.";
-        }
-        return "";
     };
 
     const switchTurn = () => {
@@ -197,7 +182,7 @@ const gameControl = (() => {
         renderer.clearButtons();
     };
 
-    return { createPlayer, startGame, resetGame, switchTurn, playRound };
+    return { createPlayer, startGame, resetGame, playRound };
 })();
 
 

@@ -42,7 +42,8 @@ button:disabled {
     align-items: center;
     background-color: var(--modal-box-background);
     border: 8px double #6200EE;
-    margin: 90px;
+    margin-top: 140px;
+    margin-bottom: 50px;
     max-width: 200px;
     width: 100%;
     border-radius: 12px;
