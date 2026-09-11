@@ -23,7 +23,7 @@ const renderer = (() => {
         mainHeader.classList.add("main-header", "no-select");
         turnIndicator.classList.add("turn-indicator", "no-select");
         displayBoard.classList.add("display-board");
-        newGameBtn.classList.add("new-game-btn");
+        newGameBtn.classList.add("new-game-btn", "no-select");
         modalOverlay.classList.add("modal-overlay");
         modalBoxResult.classList.add("modal-box");
         modalResultText.classList.add("no-select");
