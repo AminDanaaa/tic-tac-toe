@@ -9,9 +9,7 @@ const modalOverlay = document.createElement("div");
 const modalBoxResult = document.createElement("div");
 const modalResultText = document.createElement("h2");
 const modalResultButton = document.createElement("button");
-const boardButtons = Array(9).fill(null);
-
-
+export const boardButtons = Array(9).fill(null);
 
 // render board buttons
 function createButtons() {
